@@ -14,7 +14,10 @@ public class MyApp extends Application {
         FacebookSdk.setApplicationId(getString(R.string.facebook_application_id));
         FacebookSdk.setClientToken(getString(R.string.facebook_client_token));
         FacebookSdk.sdkInitialize(getApplicationContext());
-        FacebookSdk.setAutoLogAppEventsEnabled(true);
+        
+        userConsent = true // code to obtain consent from users
+        FacebookSdk.setAutoLogAppEventsEnabled(userConsent);
+        
         AppEventsLogger.activateApp(this);
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
