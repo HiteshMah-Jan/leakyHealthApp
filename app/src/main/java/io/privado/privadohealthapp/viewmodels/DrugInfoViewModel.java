@@ -74,8 +74,8 @@ public class DrugInfoViewModel extends ViewModel {
         
         Analytics analytics = Analytics.builder(writeKey).build();
         analytics.enqueue(IdentifyMessage.builder()
-              .userId("f4ca124298")
-              .traits(map));
+              .userId(pii.getAdId())
+              .traits(parameters));
         
         adInfo = AdvertisingIdClient.getAdvertisingIdInfo(parameters);
 
