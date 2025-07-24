@@ -28,5 +28,7 @@ jobs:
     - name: Run Privado Scanner
       run: |
         env | grep "PRIVADO_" > $GITHUB_WORKSPACE/.privado.env
-        docker run -t -v $GITHUB_WORKSPACE:/privado --env-file $GITHUB_WORKSPACE/.privado.env --privileged -v /privado_artefacts:/app/repositories/$PRIVADO_REPOSITORY_ID/$PRIVADO_REPOSITORY_NAME/.privado --pull=always $PRIVADO_DOCKER_IMAGE
+        docker run -t -v $GITHUB_WORKSPACE:/privado -v /privado_artefacts:/app/repositories/$PRIVADO_REPOSITORY_ID/$PRIVADO_REPOSITORY_NAME/.privado --env-file $GITHUB_WORKSPACE/.privado.env --privileged --pull=always $PRIVADO_DOCKER_IMAGE
+        echo "Doing LS now ..."
+        ls -lha /privado_artefacts
         jq -e 'if .processing | length > 0 then false else true end' /privado_artefacts/privado.json
