@@ -29,8 +29,16 @@ jobs:
       run: |
         env | grep "PRIVADO_" > $GITHUB_WORKSPACE/.privado.env
         docker run -t -v $GITHUB_WORKSPACE:/privado -v /privado_artefacts:/app/repositories/$PRIVADO_API_ID/$PRIVADO_REPOSITORY_NAME/.privado --env-file $GITHUB_WORKSPACE/.privado.env --privileged --pull=always $PRIVADO_DOCKER_IMAGE
-        jq -e '
-          .violations | 
-          any(.policyId as $id | ["PrivadoPolicy.Deny.SensitiveLeakage", "PrivadoPolicy.Deny.SensitiveSharing"] | contains([$id])) | 
-          not
-        ' /privado_artefacts/privado.json
+        FAILED_POLICY=$(jq -r '
+          .violations[] |
+          select(.policyId as $id | ["PrivadoPolicy.Deny.SensitiveSharing", "PrivadoPolicy.Deny.SensitiveLeakage"] | contains([$id])) |
+          .policyId
+        ' /privado_artefacts/privado.json)
+        if [[ -z "${FAILED_POLICY}" ]]; then
+            echo "No Issues were found in the scan."
+            true
+        else
+            echo "There was a violation found during the scan : ${FAILED_POLICY}"
+            false
+        fi
+      
